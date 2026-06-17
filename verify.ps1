@@ -18,11 +18,12 @@ function Invoke-Step($Title, $Cmd) {
     }
 }
 
-Invoke-Step '[1/5] pnpm install --frozen-lockfile' 'pnpm install --frozen-lockfile'
-Invoke-Step '[2/5] format:check (prettier)'         'pnpm format:check'
-Invoke-Step '[3/5] lint (eslint)'                   'pnpm lint'
-Invoke-Step '[4/5] typecheck (nuxt typecheck)'      'pnpm typecheck'
-Invoke-Step '[5/5] build (nuxt generate)'           'pnpm generate'
+Invoke-Step '[1/6] pnpm install --frozen-lockfile' 'pnpm install --frozen-lockfile'
+Invoke-Step '[2/6] format:check (prettier)'         'pnpm format:check'
+Invoke-Step '[3/6] lint (eslint)'                   'pnpm lint'
+Invoke-Step '[4/6] typecheck (nuxt typecheck)'      'pnpm typecheck'
+Invoke-Step '[5/6] test (vitest)'                   'pnpm test'
+Invoke-Step '[6/6] build (nuxt generate)'           'pnpm generate'
 
 Write-Host ''
-Write-Host 'OK verify: format + lint + typecheck + build — всё зелёное' -ForegroundColor Green
+Write-Host 'OK verify: format + lint + typecheck + test + build — всё зелёное' -ForegroundColor Green

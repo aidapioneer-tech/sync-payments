@@ -11,20 +11,23 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-echo "==> [1/5] pnpm install --frozen-lockfile"
+echo "==> [1/6] pnpm install --frozen-lockfile"
 pnpm install --frozen-lockfile
 
-echo "==> [2/5] format:check (prettier)"
+echo "==> [2/6] format:check (prettier)"
 pnpm format:check
 
-echo "==> [3/5] lint (eslint)"
+echo "==> [3/6] lint (eslint)"
 pnpm lint
 
-echo "==> [4/5] typecheck (nuxt typecheck / vue-tsc)"
+echo "==> [4/6] typecheck (nuxt typecheck / vue-tsc)"
 pnpm typecheck
 
-echo "==> [5/5] build (nuxt generate)"
+echo "==> [5/6] test (vitest)"
+pnpm test
+
+echo "==> [6/6] build (nuxt generate)"
 pnpm generate
 
 echo ""
-echo "OK verify: format + lint + typecheck + build — всё зелёное"
+echo "OK verify: format + lint + typecheck + test + build — всё зелёное"
