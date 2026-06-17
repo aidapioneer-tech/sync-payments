@@ -35,7 +35,7 @@ export function chunkProductsList<T>(
   let currentPage = 0
   const pageItems: T[][] = []
 
-  if (productsCollection.length > (perPageMap.first + fix)) {
+  if (productsCollection.length > perPageMap.first + fix) {
     perPageMap.first += fix
   }
 

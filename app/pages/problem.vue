@@ -1,12 +1,9 @@
 <script setup lang="ts">
-
 definePageMeta({
-	layout: 'page',
-	title: 'problem'
+  layout: 'page',
+  title: 'problem'
 })
-
-
 </script>
 <template>
-	<div>Some problem</div>
+  <div>Some problem</div>
 </template>

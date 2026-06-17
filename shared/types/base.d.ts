@@ -19,7 +19,7 @@ export type UfSmartLinkType = {
       contactId?: string
       myCompanyId?: string
       dogovorId?: string
-    },
+    }
     isFilterBy: {
       company: boolean
       contact: boolean

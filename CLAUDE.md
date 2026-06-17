@@ -16,14 +16,14 @@
 
 ## Стек (целевой стандарт флота aidapioneer)
 
-| Слой | Технология |
-|---|---|
-| Пакетный менеджер | pnpm (поле `packageManager`), Node 22+ |
-| Фреймворк | Nuxt 4 (Nitro + Vue 3) |
-| Стили | Tailwind 4 (`@import "tailwindcss"`) + тема `@bitrix24/b24ui-nuxt` |
-| UI-кит | `@bitrix24/b24ui-nuxt` + `@bitrix24/b24icons-vue` (**только официальные**) |
-| Bitrix24 SDK | `@bitrix24/b24jssdk` + `@bitrix24/b24jssdk-nuxt` (плагин `$initializeB24Frame`) |
-| Линт/типы | ESLint flat (`@nuxt/eslint`) + `nuxt typecheck` (vue-tsc, strict) |
+| Слой              | Технология                                                                      |
+| ----------------- | ------------------------------------------------------------------------------- |
+| Пакетный менеджер | pnpm (поле `packageManager`), Node 22+                                          |
+| Фреймворк         | Nuxt 4 (Nitro + Vue 3)                                                          |
+| Стили             | Tailwind 4 (`@import "tailwindcss"`) + тема `@bitrix24/b24ui-nuxt`              |
+| UI-кит            | `@bitrix24/b24ui-nuxt` + `@bitrix24/b24icons-vue` (**только официальные**)      |
+| Bitrix24 SDK      | `@bitrix24/b24jssdk` + `@bitrix24/b24jssdk-nuxt` (плагин `$initializeB24Frame`) |
+| Линт/типы         | ESLint flat (`@nuxt/eslint`) + `nuxt typecheck` (vue-tsc, strict)               |
 
 **Запрещено:** форки `@bxshefby/*`, самодельные копии готовых b24-компонентов,
 прямые REST-запросы. Любой вызов REST — только через SDK (`$b24.callBatch`,
@@ -62,7 +62,7 @@ CI повторяет эти же проверки. PR не мержится б�
 
 ## Связанные репозитории
 
-| Репо | Роль |
-|---|---|
-| `aidapioneer-tech/sync-payments` | это приложение (распределение оплат) |
-| `aidapioneer-tech/aida` | база знаний и эталоны CI/CD (`docs/ci.md`, `docs/deploy.md`) — **только справка** |
+| Репо                             | Роль                                                                              |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| `aidapioneer-tech/sync-payments` | это приложение (распределение оплат)                                              |
+| `aidapioneer-tech/aida`          | база знаний и эталоны CI/CD (`docs/ci.md`, `docs/deploy.md`) — **только справка** |
