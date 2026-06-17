@@ -42,8 +42,10 @@
 
 ```
 pnpm install --frozen-lockfile   # детерминированная установка
+pnpm format:check                # prettier (стиль)
 pnpm lint                        # eslint
 pnpm typecheck                   # nuxt typecheck (vue-tsc, strict)
+pnpm test                        # vitest
 pnpm generate                    # production-сборка не сломана
 ```
 

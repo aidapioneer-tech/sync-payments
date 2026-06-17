@@ -66,4 +66,22 @@ describe('chunkProductsList', () => {
     // length(5) <= first(9) + fix(2) -> всё на одной странице
     expect(chunkProductsList(items)).toEqual([[0, 1, 2, 3, 4]])
   })
+
+  it('на границе length === first + fix fix не применяется', () => {
+    const items = Array.from({ length: 11 }, (_, i) => i)
+    // length(11) НЕ > first(9) + fix(2) -> first остаётся 9: страницы 9 и 2
+    const result = chunkProductsList(items)
+    expect(result).toHaveLength(2)
+    expect(result[0]).toHaveLength(9)
+    expect(result[1]).toHaveLength(2)
+  })
+
+  it('не мутирует переданный perPageMap (повторный вызов даёт тот же результат)', () => {
+    const items = Array.from({ length: 20 }, (_, i) => i)
+    const perPageMap = { first: 5, second: 7 }
+    const first = chunkProductsList(items, perPageMap, 3)
+    const second = chunkProductsList(items, perPageMap, 3)
+    expect(perPageMap.first).toBe(5) // объект конфига не изменился
+    expect(second).toEqual(first) // второй вызов не «съехал»
+  })
 })

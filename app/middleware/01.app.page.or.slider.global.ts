@@ -1,10 +1,7 @@
 import { LoggerBrowser } from '@bitrix24/b24jssdk'
 import type { RouteLocationNormalized } from 'vue-router'
 
-const $logger = LoggerBrowser.build(
-  'middleware:app.page.or.slider.global'
-  //import.meta.env?.DEV === true
-)
+const $logger = LoggerBrowser.build('middleware:app.page.or.slider.global', import.meta.dev)
 
 const baseDir = '/'
 
@@ -64,7 +61,7 @@ export default defineNuxtRouteMiddleware(
     } catch (error) {
       const appError = createError({
         statusCode: 404,
-        message: error instanceof Error ? error.message : String(error),
+        message: 'Ошибка загрузки приложения',
         data: {
           description: 'Problem in middleware',
           homePageIsHide: false

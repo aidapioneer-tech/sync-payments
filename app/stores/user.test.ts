@@ -1,4 +1,3 @@
-// @vitest-environment nuxt
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useUserStore } from './user'
@@ -19,6 +18,12 @@ describe('useUserStore.initFromBatch', () => {
     const store = useUserStore()
     store.initFromBatch({ name: 'Иван' })
     expect(store.login).toBe('Иван')
+  })
+
+  it('использует только фамилию, если имя не задано', () => {
+    const store = useUserStore()
+    store.initFromBatch({ lastName: 'Петров' })
+    expect(store.login).toBe('Петров')
   })
 
   it('подставляет пробел, если имя и фамилия не заданы', () => {

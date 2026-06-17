@@ -25,3 +25,5 @@ logs
 
 # Visual regression artifacts
 screenshots
+# Nuxt generated rc (содержит setups.* модулей)
+.nuxtrc

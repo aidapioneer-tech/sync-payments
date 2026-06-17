@@ -148,7 +148,7 @@ onMounted(async () => {
       class="w-1/2 sm:w-1/3"
     />
     <div class="mt-6 flex flex-col items-center justify-center gap-2">
-      <ProseH1 class="text-nowrap mb-0"> Утановка </ProseH1>
+      <ProseH1 class="text-nowrap mb-0"> Установка </ProseH1>
       <ProseP small accent="less">
         {{ steps[stepCode]?.caption || '...' }}
       </ProseP>

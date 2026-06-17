@@ -10,7 +10,7 @@ definePageMeta({
 })
 
 // region Init ////
-const $logger = LoggerBrowser.build('sync-payments', true)
+const $logger = LoggerBrowser.build('sync-payments', import.meta.dev)
 
 let $b24: B24Frame
 const isInit: Ref<boolean> = ref(false)
@@ -19,7 +19,7 @@ onMounted(async () => {
   try {
     const { $initializeB24Frame } = useNuxtApp()
     $b24 = await $initializeB24Frame()
-    $b24.setLogger(LoggerBrowser.build('Core', true))
+    $b24.setLogger(LoggerBrowser.build('Core', import.meta.dev))
 
     await $b24.parent.setTitle('Распределение платежей')
 
@@ -30,7 +30,7 @@ onMounted(async () => {
     $logger.error(error)
     showError({
       statusCode: 404,
-      statusMessage: error instanceof Error ? error.message : String(error),
+      statusMessage: 'Не удалось инициализировать приложение',
       data: {
         description: 'Problem in app',
         homePageIsHide: true,

@@ -130,7 +130,7 @@ onMounted(async () => {
   } catch (error) {
     $logger.error(error)
 
-    processError(new Result().addError(error as Error), error as Error)
+    processError(new Result().addError(toError(error)), toError(error))
   }
 })
 
@@ -171,7 +171,7 @@ const loadData = async () => {
   } catch (error) {
     $logger.error(error)
 
-    processError(new Result().addError(error as Error), error as Error)
+    processError(new Result().addError(toError(error)), toError(error))
   }
 
   isProcess.value = false
@@ -213,8 +213,6 @@ const loadEntityData = async (): Promise<void> => {
     }
 
     const response = await $b24.callBatch(commands, true)
-
-    $logger.info(response.getData()) ////
 
     const data: {
       id: number
@@ -259,11 +257,11 @@ const loadEntityData = async (): Promise<void> => {
     }
   } catch (error) {
     if (result.isSuccess) {
-      result.addError(error as Error)
+      result.addError(toError(error))
     }
 
     $logger.error(error)
-    processError(result, error as Error)
+    processError(result, toError(error))
   }
 }
 
@@ -388,15 +386,13 @@ const loadClientPayments = async (): Promise<void> => {
       iterator++
     }
     // endregion ////
-
-    $logger.log(entity.value.dealList)
   } catch (error) {
     if (result.isSuccess) {
-      result.addError(error as Error)
+      result.addError(toError(error))
     }
 
     $logger.error(error)
-    processError(result, error as Error)
+    processError(result, toError(error))
   }
 }
 
@@ -431,15 +427,13 @@ const makeSaveDistributions = async (): Promise<void> => {
   }
 
   try {
-    const response = await $b24.callBatchByChunk(commands, true)
-
-    $logger.info(response.getData())
+    await $b24.callBatchByChunk(commands, true)
 
     await loadData()
   } catch (error) {
     $logger.error(error)
 
-    processError(new Result().addError(error as Error), error as Error)
+    processError(new Result().addError(toError(error)), toError(error))
   }
 
   isProcess.value = false
@@ -469,6 +463,11 @@ const isDistributionsSumWarning = computed(() => {
 })
 
 // region Tools ////
+/** Безопасно приводит значение из catch (тип unknown) к Error. */
+function toError(value: unknown): Error {
+  return value instanceof Error ? value : new Error(String(value))
+}
+
 function processError(result: Result, error: null | Error = null): void {
   showError({
     statusCode: 404,
@@ -606,7 +605,7 @@ const makeOpenSliderDeal = async (entityId: number) => {
                         "
                         use-fill
                         color="warning"
-                        label="Валюты отличаюися"
+                        label="Валюты отличаются"
                         data-info="Если очень нужно, то можно через БП сконвертировать пришедшие деньги в
 												другую валюту"
                       />
@@ -617,7 +616,7 @@ const makeOpenSliderDeal = async (entityId: number) => {
                         "
                         use-fill
                         color="danger"
-                        label="Валюты отличаюися"
+                        label="Валюты отличаются"
                         data-info="Нельзя распределять на другую валюту"
                       />
                     </div>
