@@ -1,0 +1,95 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Деплои не прерывают друг друга (в отличие от CI — там cancel-in-progress: true)
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+# Минимальные права токена
+permissions:
+  contents: read
+
+# pnpm/action-setup ещё на Node.js 20 — форсируем Node.js 24, чтобы убрать
+# предупреждение об устаревшем Node.js 20.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Setup pnpm
+        # version берётся из поля packageManager в package.json
+        uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4.4.0
+
+      - name: Setup Node
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Не выкладываем на сервер сломанный код
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm generate
+        # NUXT_PUBLIC_* (id смарт-процессов и пр.) — публичные значения, при
+        # необходимости переопределяются через vars.* (не secrets). По умолчанию
+        # берутся из runtimeConfig.public в nuxt.config.ts.
+
+      - name: Validate build output
+        run: |
+          if [ ! -d .output/public ] || [ -z "$(ls -A .output/public)" ]; then
+            echo "::error::.output/public пуст — сборка не дала результата"
+            exit 1
+          fi
+
+      # Секреты передаём через env: шага и используем как $VAR — НЕ интерполируем
+      # ${{ secrets.* }} прямо в shell (защита от script injection).
+      - name: Setup SSH
+        env:
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          printf '%s\n' "$SSH_DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      # Сервер b24.aidapioneer.by слушает SSH на порту 7222 (не 22).
+      - name: Deploy
+        env:
+          DEPLOY_USER: ${{ secrets.SSH_DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.SSH_DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.SSH_DEPLOY_PATH }}
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p 7222" \
+            .output/public/ \
+            "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
