@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "@bitrix24/b24ui-nuxt";
+
+/** region scrollbar */
+:root {
+	--scrollbar-width: 0
+}
+html,
+body {
+	scrollbar-width: thin;
+}
+/** endregion */
