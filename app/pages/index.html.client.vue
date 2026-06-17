@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, type Ref, onMounted, onUnmounted } from 'vue'
-import { LoggerBrowser, B24Frame } from '@bitrix24/b24jssdk'
+import { LoggerBrowser } from '@bitrix24/b24jssdk'
+import type { B24Frame } from '@bitrix24/b24jssdk'
 import SpinnerIcon from '@bitrix24/b24icons-vue/specialized/SpinnerIcon'
 
 definePageMeta({
@@ -31,12 +32,12 @@ onMounted(async() =>
 		
 		await makeFitWindow()
 	}
-	catch(error: any)
+	catch(error)
 	{
 		$logger.error(error)
 		showError({
 			statusCode: 404,
-			statusMessage: error?.message || error,
+			statusMessage: error instanceof Error ? error.message : String(error),
 			data: {
 				description: 'Problem in app',
 				homePageIsHide: true,
@@ -71,7 +72,8 @@ const makeFitWindow = async() =>
 <template>
 	<ClientOnly>
 		<div class="mx-lg my-sm flex flex-col">
-		<div class=""
+		<div
+class=""
 		     :class="{
 				'overflow-hidden': !isInit
 			}"

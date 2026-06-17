@@ -14,11 +14,9 @@ const route = useRoute()
 		<div class="px-lg mb-xs2">
 			<div class="min-h-7xl h-7xl w-full flex flex-row items-center justify-normal gap-lg2 border-b border-b-base-900/0.1">
 				<div class="pl-xs2 text-4xl font-light font-b24-secondary text-base-master">{{ route.meta.title }}</div>
-				<div class="pr-xs2 grow flex gap-4 flex-row items-end justify-end text-lg" v-if="route.path === '/'">
-				
-				</div>
+				<div v-if="route.path === '/'" class="pr-xs2 grow flex gap-4 flex-row items-end justify-end text-lg"/>
 			</div>
 		</div>
-		<slot></slot>
+		<slot/>
 	</div>
 </template>

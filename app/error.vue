@@ -3,20 +3,32 @@ import { ref } from 'vue'
 import type { NuxtError } from '#app'
 import LetCatInIcon from '@bitrix24/b24icons-vue/specialized/LetCatInIcon'
 
-const $props = defineProps({
-	error: Object as () => NuxtError
-})
+interface ErrorPageData {
+	description?: string
+	isShowClearError?: boolean
+	clearErrorHref?: string
+	clearErrorTitle?: string
+	homePageIsHide?: boolean
+	homePageHref?: string
+	homePageTitle?: string
+}
+
+const $props = defineProps<{
+	error: NuxtError
+}>()
+
+const data = ($props.error.data ?? {}) as ErrorPageData
 
 const errorData = ref({
-	code: $props.error?.statusCode || 400,
-	title: $props.error?.message || 'Error',
-	description: ($props.error?.data as any)?.description || '',
-	clearErrorIsShow: ($props.error?.data as any)?.isShowClearError === true,
-	clearErrorHref: ($props.error?.data as any)?.clearErrorHref || '/',
-	clearErrorTitle: ($props.error?.data as any)?.clearErrorTitle || 'Повторить',
-	homePageIsHide: ($props.error?.data as any)?.homePageIsHide === true,
-	homePageHref: ($props.error?.data as any)?.homePageHref || '/',
-	homePageTitle: ($props.error?.data as any)?.homePageTitle || 'Вернуться',
+	code: $props.error.statusCode || 400,
+	title: $props.error.message || 'Error',
+	description: data.description || '',
+	clearErrorIsShow: data.isShowClearError === true,
+	clearErrorHref: data.clearErrorHref || '/',
+	clearErrorTitle: data.clearErrorTitle || 'Повторить',
+	homePageIsHide: data.homePageIsHide === true,
+	homePageHref: data.homePageHref || '/',
+	homePageTitle: data.homePageTitle || 'Вернуться',
 })
 
 const handleError = () => clearError({ redirect: errorData.value.clearErrorHref })
@@ -41,9 +53,9 @@ const handleError = () => clearError({ redirect: errorData.value.clearErrorHref 
 				:to="errorData.homePageHref"
 			>{{ errorData.homePageTitle }}</NuxtLink>
 			<button
-				@click="handleError"
 				v-show="errorData.clearErrorIsShow"
 				class="mt-4 text-md font-medium text-white bg-blue px-4 py-2 rounded hover:bg-blue-400 active:bg-blue-600"
+				@click="handleError"
 			>{{ errorData.clearErrorTitle }}</button>
 		</div>
 	</div>

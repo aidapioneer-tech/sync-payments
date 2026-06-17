@@ -9,6 +9,6 @@ useHead({
 
 <template>
 	<div class="">
-		<slot></slot>
+		<slot/>
 	</div>
 </template>

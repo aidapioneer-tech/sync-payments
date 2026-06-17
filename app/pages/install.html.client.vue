@@ -4,7 +4,7 @@ import { sleepAction } from '~/utils/sleep'
 import type { ProgressProps } from '@bitrix24/b24ui-nuxt'
 import type { IStep } from '#shared/types/base'
 import type { B24Frame } from '@bitrix24/b24jssdk'
-import Logo from '~/components/Logo.vue'
+import AppLogo from '~/components/AppLogo.vue'
 
 definePageMeta({
   layout: 'index-page'
@@ -119,7 +119,7 @@ onMounted(async () => {
       stepCode.value = key
       await step.action()
     }
-  } catch (error: any) {
+  } catch (error) {
     processErrorGlobal(error, {
       homePageIsHide: true,
       isShowClearError: false,
@@ -132,7 +132,7 @@ onMounted(async () => {
 
 <template>
   <div class="mx-3 flex flex-col items-center justify-center gap-1 h-dvh">
-    <Logo
+    <AppLogo
       class="size-[208px]"
       :class="[
         stepCode === 'finish' ? 'text-(--ui-color-accent-main-success)' : 'text-(--ui-color-accent-soft-green-1)'

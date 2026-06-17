@@ -8,5 +8,5 @@ definePageMeta({
 
 </script>
 <template>
-	Some problem
+	<div>Some problem</div>
 </template>

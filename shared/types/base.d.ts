@@ -2,7 +2,7 @@
 export interface IStep {
   action: () => Promise<void>
   caption?: string
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 }
 // endregion ////
 
@@ -13,7 +13,7 @@ export type UfSmartLinkType = {
   // это цель - то к чему мы линкуемся
   target: {
     entityTypeId: number
-    customFilter?: Record<string, any>
+    customFilter?: Record<string, unknown>
     clientFields: {
       companyId?: string
       contactId?: string

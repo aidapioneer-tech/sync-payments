@@ -673,7 +673,7 @@ const makeOpenSliderDeal = async (entityId: number) =>
 												/>
 												<B24InputNumber
 													v-else
-													v-model.number="payment.distributionsSum"
+													v-model="payment.distributionsSum"
 													:min="0.0"
 													:max="payment.sum"
                           :step="0.01"
