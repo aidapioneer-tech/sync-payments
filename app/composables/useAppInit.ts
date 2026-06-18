@@ -1,4 +1,4 @@
-import {computed, type ComputedRef, ref} from "vue";
+import { computed, ref } from 'vue'
 import { LoggerBrowser, AjaxError, LoadDataType, useB24Helper } from '@bitrix24/b24jssdk'
 import type { B24Frame } from '@bitrix24/b24jssdk'
 
@@ -12,7 +12,14 @@ export interface ProcessErrorData {
   homePageTitle?: string
 }
 
-const { initB24Helper, getB24Helper, destroyB24Helper: destroyB24HelperOry, usePullClient, useSubscribePullClient, startPullClient } = useB24Helper()
+const {
+  initB24Helper,
+  getB24Helper,
+  destroyB24Helper: destroyB24HelperOry,
+  usePullClient,
+  useSubscribePullClient,
+  startPullClient
+} = useB24Helper()
 const isInitB24Helper = ref(false)
 
 const moduleId = 'main'
@@ -22,10 +29,7 @@ const moduleId = 'main'
  * Coordinates data loading via batch request
  */
 export const useAppInit = (loggerTitle?: string) => {
-  const $logger = LoggerBrowser.build(
-    loggerTitle ?? 'App',
-    import.meta.dev
-  )
+  const $logger = LoggerBrowser.build(loggerTitle ?? 'App', import.meta.dev)
 
   // Stores
   const user = useUserStore()
@@ -34,36 +38,24 @@ export const useAppInit = (loggerTitle?: string) => {
    * Initialize application data
    * Performs batch request and updates all stores
    */
-  async function initApp(
-    $b24: B24Frame
-  ) {
+  async function initApp($b24: B24Frame) {
     $logger.info('InitApp start')
 
     /**
      * @todo init data from helper
      */
-    await initB24Helper(
-      $b24,
-      [
-        LoadDataType.App,
-        LoadDataType.Currency,
-        LoadDataType.Profile
-      ]
-    )
+    await initB24Helper($b24, [LoadDataType.App, LoadDataType.Currency, LoadDataType.Profile])
     isInitB24Helper.value = true
 
-    const data = {
-      appInfo: getB24Helper().appInfo,
-      profileData: getB24Helper().profileInfo,
-    }
-    $logger.log('Init data >>', data)
+    const profileData = getB24Helper().profileInfo
 
     // Update stores with received data
     user.initFromBatch({
-      name: data.profileData?.data.name ?? undefined,
-      lastName: data.profileData?.data.lastName ?? undefined,
-      isAdmin: data.profileData?.data.isAdmin
+      name: profileData?.data.name ?? undefined,
+      lastName: profileData?.data.lastName ?? undefined,
+      isAdmin: profileData?.data.isAdmin
     })
+    $logger.info('Init data loaded')
 
     $logger.info('InitApp stop')
   }
@@ -72,16 +64,7 @@ export const useAppInit = (loggerTitle?: string) => {
    * Reloads data
    */
   async function reloadData() {
-    await b24Helper.value?.loadData([
-      LoadDataType.Currency
-    ])
-
-    const data = {
-      appSettings: getB24Helper().appOptions,
-      userSettings: getB24Helper().userOptions
-    }
-
-    $logger.log('Reload data >>', data)
+    await b24Helper.value?.loadData([LoadDataType.Currency])
 
     $logger.info('reloadData stop')
   }
@@ -99,10 +82,7 @@ export const useAppInit = (loggerTitle?: string) => {
     destroyB24HelperOry()
   }
 
-  function processErrorGlobal(
-    error: unknown | string | Error,
-    processErrorData?: ProcessErrorData
-  ) {
+  function processErrorGlobal(error: unknown, processErrorData?: ProcessErrorData) {
     $logger.error(error)
 
     let title = 'Error'
@@ -114,18 +94,21 @@ export const useAppInit = (loggerTitle?: string) => {
     } else if (error instanceof Error) {
       description = error.message
     } else {
-      description = error as string
+      description = String(error)
     }
 
     showError({
       statusCode: 404,
       statusMessage: title,
-      data: Object.assign({
-        description: description,
-        homePageIsHide: true,
-        isShowClearError: true,
-        clearErrorHref: '/main'
-      }, (processErrorData ?? {})),
+      data: Object.assign(
+        {
+          description: description,
+          homePageIsHide: true,
+          isShowClearError: true,
+          clearErrorHref: '/main'
+        },
+        processErrorData ?? {}
+      ),
       cause: error,
       fatal: true
     })
