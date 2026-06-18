@@ -62,14 +62,14 @@ const steps = ref<Record<string, IStep>>({
           params: {
             PLACEMENT: `CRM_DYNAMIC_${config.smartProcessIdPayment}_DETAIL_TAB`,
             HANDLER: `${appUrl}handler/smart-proc-payment-sync`,
-            TITLE: `[${import.meta.dev ? 'dev' : 'prod'}Sh] Распределение`,
+            TITLE: `[${import.meta.dev ? 'dev' : 'prod'}] Распределение`,
             DESCRIPTION: 'Распределяем деньги по сделкам',
-            GROUP_NAME: `[${import.meta.dev ? 'dev' : 'prod'}Sh] Оплаты`,
+            GROUP_NAME: `[${import.meta.dev ? 'dev' : 'prod'}] Оплаты`,
             LANG_ALL: {
               ru: {
-                TITLE: `[${import.meta.dev ? 'dev' : 'prod'}Sh] Распределение`,
+                TITLE: `[${import.meta.dev ? 'dev' : 'prod'}] Распределение`,
                 DESCRIPTION: 'Распределяем деньги по сделкам',
-                GROUP_NAME: `[${import.meta.dev ? 'dev' : 'prod'}Sh] Оплаты`
+                GROUP_NAME: `[${import.meta.dev ? 'dev' : 'prod'}] Оплаты`
               }
             }
           }

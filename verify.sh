@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # verify.sh — единая проверка "Definition of Done" перед коммитом / PR.
-# Прогоняет детерминированную установку, линт, тайпчек и production-сборку.
-# Падает на первой же ошибке (set -e). Зеркало — verify.ps1 (Windows).
+# Прогоняет установку, prettier, линт, тайпчек, паритет i18n-ключей, тесты
+# и production-сборку. Падает на первой же ошибке (set -e). Зеркало — verify.ps1.
 #
 set -euo pipefail
 

@@ -81,7 +81,7 @@ jobs:
           printf '%s\n' "$SSH_DEPLOY_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
-      # Сервер b24.aidapioneer.by слушает SSH на порту 7222 (не 22).
+      # Сервер слушает SSH на нестандартном порту 7222 (не 22).
       - name: Deploy
         env:
           DEPLOY_USER: ${{ secrets.SSH_DEPLOY_USER }}

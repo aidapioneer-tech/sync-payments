@@ -47,18 +47,15 @@ export const useAppInit = (loggerTitle?: string) => {
     await initB24Helper($b24, [LoadDataType.App, LoadDataType.Currency, LoadDataType.Profile])
     isInitB24Helper.value = true
 
-    const data = {
-      appInfo: getB24Helper().appInfo,
-      profileData: getB24Helper().profileInfo
-    }
-    $logger.log('Init data >>', data)
+    const profileData = getB24Helper().profileInfo
 
     // Update stores with received data
     user.initFromBatch({
-      name: data.profileData?.data.name ?? undefined,
-      lastName: data.profileData?.data.lastName ?? undefined,
-      isAdmin: data.profileData?.data.isAdmin
+      name: profileData?.data.name ?? undefined,
+      lastName: profileData?.data.lastName ?? undefined,
+      isAdmin: profileData?.data.isAdmin
     })
+    $logger.info('Init data loaded')
 
     $logger.info('InitApp stop')
   }
@@ -68,13 +65,6 @@ export const useAppInit = (loggerTitle?: string) => {
    */
   async function reloadData() {
     await b24Helper.value?.loadData([LoadDataType.Currency])
-
-    const data = {
-      appSettings: getB24Helper().appOptions,
-      userSettings: getB24Helper().userOptions
-    }
-
-    $logger.log('Reload data >>', data)
 
     $logger.info('reloadData stop')
   }
@@ -92,10 +82,7 @@ export const useAppInit = (loggerTitle?: string) => {
     destroyB24HelperOry()
   }
 
-  function processErrorGlobal(
-    error: unknown | string | Error,
-    processErrorData?: ProcessErrorData
-  ) {
+  function processErrorGlobal(error: unknown, processErrorData?: ProcessErrorData) {
     $logger.error(error)
 
     let title = 'Error'
@@ -107,7 +94,7 @@ export const useAppInit = (loggerTitle?: string) => {
     } else if (error instanceof Error) {
       description = error.message
     } else {
-      description = error as string
+      description = String(error)
     }
 
     showError({

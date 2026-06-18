@@ -26,15 +26,22 @@ describe('useUserStore.initFromBatch', () => {
     expect(store.login).toBe('Петров')
   })
 
-  it('подставляет пробел, если имя и фамилия не заданы', () => {
+  it('возвращает пустую строку, если имя и фамилия не заданы', () => {
     const store = useUserStore()
     store.initFromBatch({})
-    expect(store.login).toBe(' ')
+    expect(store.login).toBe('')
   })
 
   it('isAdmin по умолчанию false', () => {
     const store = useUserStore()
     store.initFromBatch({ name: 'A', lastName: 'B' })
     expect(store.isAdmin).toBe(false)
+  })
+
+  it('устанавливает isAdmin=true даже без имени', () => {
+    const store = useUserStore()
+    store.initFromBatch({ isAdmin: true })
+    expect(store.isAdmin).toBe(true)
+    expect(store.login).toBe('')
   })
 })

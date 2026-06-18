@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', () => {
    * @param data.isAdmin
    */
   function initFromBatch(data: { name?: string; lastName?: string; isAdmin?: boolean }) {
-    login.value = [data?.name, data?.lastName].filter(Boolean).join(' ') || ' '
+    login.value = [data?.name, data?.lastName].filter(Boolean).join(' ')
     isAdmin.value = data.isAdmin || false
   }
   // endregion ////

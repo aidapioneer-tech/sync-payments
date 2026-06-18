@@ -37,7 +37,7 @@ export default defineNuxtRouteMiddleware(
       const { $initializeB24Frame } = useNuxtApp()
       const $b24 = await $initializeB24Frame()
 
-      $logger.log('>> placement.options', $b24.placement.options)
+      $logger.log('>> placement.place', $b24.placement.options?.place)
 
       if ($b24.placement.options?.place) {
         const optionsPlace: string = $b24.placement.options.place

@@ -16,6 +16,7 @@ import InvoiceIcon from '@bitrix24/b24icons-vue/crm/InvoiceIcon'
 import MailMoneyIcon from '@bitrix24/b24icons-vue/main/MailMoneyIcon'
 import InsertIcon from '@bitrix24/b24icons-vue/crm/InsertIcon'
 import Refresh5Icon from '@bitrix24/b24icons-vue/actions/Refresh5Icon'
+import { toError } from '~/utils/toError'
 
 definePageMeta({
   layout: 'tab',
@@ -28,6 +29,9 @@ const { t } = useI18n()
 const isDevelopment = ref<boolean>(import.meta.env?.DEV === true)
 
 const $logger = LoggerBrowser.build('sync-payments', isDevelopment.value)
+
+// ID платёжной системы «перевод» — для выбора иконки оплаты (см. runtimeConfig)
+const paySystemIdMailMoney = Text.toInteger(config.paySystemIdMailMoney)
 
 // region Types ////
 type RqData = {
@@ -109,7 +113,7 @@ onMounted(async () => {
   try {
     const { $initializeB24Frame } = useNuxtApp()
     $b24 = await $initializeB24Frame()
-    $b24.setLogger(LoggerBrowser.build('Core'))
+    $b24.setLogger(LoggerBrowser.build('Core', import.meta.dev))
     b24CurrentLang.value = $b24.getLang()
 
     await $b24.parent.setTitle(t('app.title'))
@@ -173,9 +177,9 @@ const loadData = async () => {
     $logger.error(error)
 
     processError(new Result().addError(toError(error)), toError(error))
+  } finally {
+    isProcess.value = false
   }
-
-  isProcess.value = false
 }
 
 /**
@@ -213,6 +217,7 @@ const loadEntityData = async (): Promise<void> => {
       }
     }
 
+    // TODO(SDK 2.0, issue #4): мигрировать на b24.actions.v2.batch.make()
     const response = await $b24.callBatch(commands, true)
 
     const data: {
@@ -275,6 +280,7 @@ const loadClientPayments = async (): Promise<void> => {
 
   try {
     // region Load deal ////
+    // TODO(SDK 2.0, issue #4): мигрировать на b24.actions.v2.fetchList.make()
     const generator = $b24.fetchListMethod(
       'crm.item.list',
       {
@@ -367,8 +373,13 @@ const loadClientPayments = async (): Promise<void> => {
       iterator++
     }
 
+    // TODO(SDK 2.0, issue #4): мигрировать на b24.actions.v2.batchByChunk.make()
     const response = await $b24.callBatchByChunk(commands, true)
-    const paymentsForDealList = response.getData() as PaymentInfo[][]
+    const responseData = response.getData()
+    if (!Array.isArray(responseData)) {
+      throw new Error(t('handler.errors.unexpectedResponse'))
+    }
+    const paymentsForDealList = responseData as PaymentInfo[][]
 
     iterator = 0
     for (const dealPayments of paymentsForDealList) {
@@ -399,35 +410,36 @@ const loadClientPayments = async (): Promise<void> => {
 
 const makeSaveDistributions = async (): Promise<void> => {
   isProcess.value = true
-  const commands = []
-
-  for (const dealRow of entity.value.dealList) {
-    for (const payment of dealRow.paymentsInfo) {
-      const sum = Text.toNumber(payment.distributionsSum)
-      if (sum > 0.0) {
-        commands.push({
-          method: 'crm.item.add',
-          params: {
-            entityTypeId: config.smartProcessIdDistributions,
-            fields: {
-              parentId1036: entity.value.id,
-              opportunity: sum,
-              currencyId: entity.value.currencyId,
-              isManualOpportunity: 'Y',
-              ufCrm13PaymentId: payment.id
-            }
-          }
-        })
-      }
-    }
-  }
-
-  if (commands.length === 0) {
-    isProcess.value = false
-    return
-  }
 
   try {
+    const commands = []
+
+    for (const dealRow of entity.value.dealList) {
+      for (const payment of dealRow.paymentsInfo) {
+        const sum = Text.toNumber(payment.distributionsSum)
+        if (sum > 0.0) {
+          commands.push({
+            method: 'crm.item.add',
+            params: {
+              entityTypeId: config.smartProcessIdDistributions,
+              fields: {
+                parentId1036: entity.value.id,
+                opportunity: sum,
+                currencyId: entity.value.currencyId,
+                isManualOpportunity: 'Y',
+                ufCrm13PaymentId: payment.id
+              }
+            }
+          })
+        }
+      }
+    }
+
+    if (commands.length === 0) {
+      return
+    }
+
+    // TODO(SDK 2.0, issue #4): мигрировать на b24.actions.v2.batchByChunk.make()
     await $b24.callBatchByChunk(commands, true)
 
     await loadData()
@@ -435,9 +447,9 @@ const makeSaveDistributions = async (): Promise<void> => {
     $logger.error(error)
 
     processError(new Result().addError(toError(error)), toError(error))
+  } finally {
+    isProcess.value = false
   }
-
-  isProcess.value = false
 }
 // endregion ////
 
@@ -464,11 +476,6 @@ const isDistributionsSumWarning = computed(() => {
 })
 
 // region Tools ////
-/** Безопасно приводит значение из catch (тип unknown) к Error. */
-function toError(value: unknown): Error {
-  return value instanceof Error ? value : new Error(String(value))
-}
-
 function processError(result: Result, error: null | Error = null): void {
   showError({
     statusCode: 404,
@@ -550,7 +557,7 @@ const makeOpenSliderDeal = async (entityId: number) => {
                   class="rounded-full bg-blue-200 size-14 min-w-14 min-h-14 flex items-center justify-center"
                 >
                   <component
-                    :is="payment.paySystemId === 9 ? MailMoneyIcon : InvoiceIcon"
+                    :is="payment.paySystemId === paySystemIdMailMoney ? MailMoneyIcon : InvoiceIcon"
                     class="size-12 text-info-text"
                   />
                 </div>

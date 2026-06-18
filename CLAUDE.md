@@ -24,6 +24,8 @@
 | UI-кит            | `@bitrix24/b24ui-nuxt` + `@bitrix24/b24icons-vue` (**только официальные**)      |
 | Bitrix24 SDK      | `@bitrix24/b24jssdk` + `@bitrix24/b24jssdk-nuxt` (плагин `$initializeB24Frame`) |
 | Линт/типы         | ESLint flat (`@nuxt/eslint`) + `nuxt typecheck` (vue-tsc, strict)               |
+| Тесты             | Vitest (`@nuxt/test-utils`)                                                     |
+| Локализация       | `@nuxtjs/i18n` (RU по умолчанию + EN, `no_prefix`)                              |
 
 **Запрещено:** форки `@bxshefby/*`, самодельные копии готовых b24-компонентов,
 прямые REST-запросы. Любой вызов REST — только через SDK (`$b24.callBatch`,
@@ -45,6 +47,7 @@ pnpm install --frozen-lockfile   # детерминированная устан
 pnpm format:check                # prettier (стиль)
 pnpm lint                        # eslint
 pnpm typecheck                   # nuxt typecheck (vue-tsc, strict)
+pnpm check:locales               # паритет ключей i18n (ru/en)
 pnpm test                        # vitest
 pnpm generate                    # production-сборка не сломана
 ```
@@ -56,6 +59,12 @@ CI повторяет эти же проверки. PR не мержится б�
 Магические идентификаторы портала (id смарт-процессов, категорий, статусов)
 держим в `runtimeConfig.public` (`nuxt.config.ts`), а не разбросанными по коду.
 Их можно переопределять переменными окружения `NUXT_PUBLIC_*` при сборке.
+
+## Локализация (i18n)
+
+Видимые строки — через `@nuxtjs/i18n` (`i18n/locales/ru.json`, `en.json`). При
+добавлении/удалении ключа обновляем **оба** файла — паритет проверяет
+`pnpm check:locales` (входит в `verify.sh` и CI).
 
 ## Секреты
 

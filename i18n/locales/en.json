@@ -39,7 +39,8 @@
       "fillMyCompany": "Please fill in the [Your company details] field.",
       "fillClient": "Please specify who paid in the [Client] field.",
       "generic": "Problems with distributing the money",
-      "dealNotFound": "Could not find a related deal for the payment"
+      "dealNotFound": "Could not find a related deal for the payment",
+      "unexpectedResponse": "The server returned an unexpected response"
     }
   }
 }

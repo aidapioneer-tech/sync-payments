@@ -43,7 +43,9 @@ export default defineNuxtConfig({
       dealForWorkCategoryId: 2,
       smartProcessIdDistributions: 1044,
       smartProcessStatusPaymentSuccess: 'DT1036_14:SUCCESS', // smartProcessIdPayment
-      smartProcessStatusPaymentFail: 'DT1036_14:FAIL' // smartProcessStatusPayment
+      smartProcessStatusPaymentFail: 'DT1036_14:FAIL', // smartProcessStatusPayment
+      // ID платёжной системы «перевод» (для иконки MailMoney; иначе — счёт)
+      paySystemIdMailMoney: 9
     }
   },
   devServer: {

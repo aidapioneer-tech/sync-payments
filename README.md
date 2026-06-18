@@ -32,6 +32,20 @@ pnpm format             # prettier --write
 ./verify.sh             # полный прогон DoD (verify.ps1 для Windows)
 ```
 
+## Первый запуск
+
+Идентификаторы портала (id смарт-процессов, категория, статусы) заданы в
+`runtimeConfig.public` (`nuxt.config.ts`) и работают «из коробки». Чтобы собрать
+под другой портал — скопируйте `.env.example` → `.env` и переопределите нужные
+`NUXT_PUBLIC_*`.
+
+## Деплой
+
+Прод собирается и выкладывается автоматически из ветки `main`
+(`.github/workflows/deploy.yml`, rsync по SSH). Нужны GitHub Secrets:
+`SSH_DEPLOY_KEY`, `SSH_KNOWN_HOSTS`, `SSH_DEPLOY_USER`, `SSH_DEPLOY_HOST`,
+`SSH_DEPLOY_PATH`. SSH-порт нестандартный — `7222`.
+
 ## Адреса (prod)
 
 - https://app.aidapioneer.by/sync-payments/index.html
