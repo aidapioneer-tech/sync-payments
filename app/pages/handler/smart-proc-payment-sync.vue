@@ -23,6 +23,7 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig().public
+const { t } = useI18n()
 
 const isDevelopment = ref<boolean>(import.meta.env?.DEV === true)
 
@@ -111,7 +112,7 @@ onMounted(async () => {
     $b24.setLogger(LoggerBrowser.build('Core'))
     b24CurrentLang.value = $b24.getLang()
 
-    await $b24.parent.setTitle('Распределение платежей')
+    await $b24.parent.setTitle(t('app.title'))
 
     await initB24Helper($b24, [LoadDataType.App, LoadDataType.Currency])
     $isInitB24Helper.value = true
@@ -120,7 +121,7 @@ onMounted(async () => {
     entity.value.id = Text.toInteger($b24.placement.options?.ID)
 
     if (entity.value.id < 1) {
-      throw new Error('Оплату нужно сохранить. Потом с ней можно тут работать')
+      throw new Error(t('handler.errors.saveFirst'))
     }
 
     await loadEntityData()
@@ -225,14 +226,14 @@ const loadEntityData = async (): Promise<void> => {
     } = response.getData().getBankPaymentEntity.item
 
     if (data.stageId === config.smartProcessStatusPaymentFail) {
-      result.addError(new Error('Оплата забракована.'))
+      result.addError(new Error(t('handler.errors.rejected')))
     } else if (data.stageId === config.smartProcessStatusPaymentSuccess) {
-      result.addError(new Error('Оплата успешно закрыта'))
+      result.addError(new Error(t('handler.errors.closed')))
     }
 
     if (result.isSuccess) {
       if (data.mycompanyId < 1) {
-        result.addError(new Error('Стоит заполнить поле [Реквизиты вашей компании].'))
+        result.addError(new Error(t('handler.errors.fillMyCompany')))
       } else {
         entity.value.myCompanyId = data.mycompanyId
       }
@@ -240,7 +241,7 @@ const loadEntityData = async (): Promise<void> => {
 
     if (result.isSuccess) {
       if (data.companyId < 1) {
-        result.addError(new Error('Стоит в поле [Клиент] указать того кто платил.'))
+        result.addError(new Error(t('handler.errors.fillClient')))
       } else {
         entity.value.companyId = data.companyId
       }
@@ -375,7 +376,7 @@ const loadClientPayments = async (): Promise<void> => {
       const firstDeal = entity.value.dealList.find((deal) => deal.id == entityId)
 
       if (!firstDeal) {
-        throw new Error(`Для оплат не нашли связанную сделку`)
+        throw new Error(t('handler.errors.dealNotFound'))
       }
 
       firstDeal.paymentsInfo = dealPayments
@@ -456,7 +457,7 @@ const isDistributionsSumWarning = computed(() => {
   const result = new Result()
 
   if (distributionsSum.value > entity.value.needDistributionsSum) {
-    result.addError(new Error('Вы хотите распределить сумму большую чем требуется'))
+    result.addError(new Error(t('handler.overLimit')))
   }
 
   return result
@@ -471,7 +472,7 @@ function toError(value: unknown): Error {
 function processError(result: Result, error: null | Error = null): void {
   showError({
     statusCode: 404,
-    message: 'Проблемы с распределением денег',
+    message: t('handler.errors.generic'),
     data: {
       description: result.getErrorMessages().join('; '),
       homePageIsHide: true,
@@ -500,7 +501,7 @@ const makeOpenSliderDeal = async (entityId: number) => {
           <SpinnerIcon class="animate-spin text-base-500 stroke-2 size-52" />
         </div>
         <template v-else>
-          <B24Separator class="mt-2 mb-3" type="dashed" label="Список сделок" />
+          <B24Separator class="mt-2 mb-3" type="dashed" :label="$t('handler.dealsList')" />
           <div
             v-for="(dealRow, dealKey) in entity.dealList"
             :key="dealKey"
@@ -569,7 +570,7 @@ const makeOpenSliderDeal = async (entityId: number) => {
                       }}
                     </div>
                     <div v-if="payment.paid === 'Y'" class="mt-2">
-                      <B24Badge use-fill color="collab" label="Оплачено" />
+                      <B24Badge use-fill color="collab" :label="$t('handler.paid')" />
                     </div>
                     <div v-else class="mt-2">
                       <div v-if="entity.currencyId === payment.currency">
@@ -579,7 +580,7 @@ const makeOpenSliderDeal = async (entityId: number) => {
                           rounded
                           size="sm"
                           :icon="InsertIcon"
-                          label="Выбрать"
+                          :label="$t('handler.select')"
                           @click.stop="payment.distributionsSum = payment.sum"
                         />
                         <B24InputNumber
@@ -605,9 +606,8 @@ const makeOpenSliderDeal = async (entityId: number) => {
                         "
                         use-fill
                         color="warning"
-                        label="Валюты отличаются"
-                        data-info="Если очень нужно, то можно через БП сконвертировать пришедшие деньги в
-												другую валюту"
+                        :label="$t('handler.currencyMismatch')"
+                        :data-info="$t('handler.currencyMismatchSoftInfo')"
                       />
                       <B24Badge
                         v-else-if="
@@ -616,8 +616,8 @@ const makeOpenSliderDeal = async (entityId: number) => {
                         "
                         use-fill
                         color="danger"
-                        label="Валюты отличаются"
-                        data-info="Нельзя распределять на другую валюту"
+                        :label="$t('handler.currencyMismatch')"
+                        :data-info="$t('handler.currencyMismatchHardInfo')"
                       />
                     </div>
                   </div>
@@ -644,7 +644,7 @@ const makeOpenSliderDeal = async (entityId: number) => {
                 size="sm"
                 :items="[
                   {
-                    label: 'Всего:',
+                    label: $t('handler.total'),
                     description: b24Helper?.currency
                       .format(entity.opportunity, entity.currencyId, b24CurrentLang)
                       .replaceAll('&amp;nbsp;', ' '),
@@ -661,20 +661,20 @@ const makeOpenSliderDeal = async (entityId: number) => {
                     ]
                   },
                   {
-                    label: 'Осталось распределить:',
+                    label: $t('handler.remaining'),
                     description: b24Helper?.currency
                       .format(entity.needDistributionsSum, entity.currencyId, b24CurrentLang)
                       .replaceAll('&amp;nbsp;', ' ')
                   },
                   {
-                    label: 'Вы хотите распределить:',
+                    label: $t('handler.youWantDistribute'),
                     description: b24Helper?.currency
                       .format(distributionsSum, entity.currencyId, b24CurrentLang)
                       .replaceAll('&amp;nbsp;', ' '),
                     orientation: 'horizontal',
                     actions: [
                       {
-                        label: 'Распределить',
+                        label: $t('handler.distribute'),
                         color: 'success' as const,
                         rounded: true,
                         size: 'lg',

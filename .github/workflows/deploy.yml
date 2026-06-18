@@ -49,6 +49,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Locales parity
+        run: pnpm check:locales
+
       - name: Test
         run: pnpm test
 

@@ -10,6 +10,7 @@ definePageMeta({
 })
 
 // region Init ////
+const { t } = useI18n()
 const $logger = LoggerBrowser.build('sync-payments', import.meta.dev)
 
 let $b24: B24Frame
@@ -21,7 +22,7 @@ onMounted(async () => {
     $b24 = await $initializeB24Frame()
     $b24.setLogger(LoggerBrowser.build('Core', import.meta.dev))
 
-    await $b24.parent.setTitle('Распределение платежей')
+    await $b24.parent.setTitle(t('app.title'))
 
     isInit.value = true
 
@@ -75,7 +76,7 @@ const makeFitWindow = async () => {
             <SpinnerIcon class="animate-spin stroke-2 size-44" />
           </div>
         </div>
-        <div v-else>Ok. Open smart process</div>
+        <div v-else>{{ $t('index.ready') }}</div>
       </div>
     </div>
   </ClientOnly>

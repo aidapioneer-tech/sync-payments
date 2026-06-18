@@ -17,18 +17,20 @@ const $props = defineProps<{
   error: NuxtError
 }>()
 
+const { t } = useI18n()
+
 const data = ($props.error.data ?? {}) as ErrorPageData
 
 const errorData = ref({
   code: $props.error.statusCode || 400,
-  title: $props.error.message || 'Error',
+  title: $props.error.message || t('error.title'),
   description: data.description || '',
   clearErrorIsShow: data.isShowClearError === true,
   clearErrorHref: data.clearErrorHref || '/',
-  clearErrorTitle: data.clearErrorTitle || 'Повторить',
+  clearErrorTitle: data.clearErrorTitle || t('error.retry'),
   homePageIsHide: data.homePageIsHide === true,
   homePageHref: data.homePageHref || '/',
-  homePageTitle: data.homePageTitle || 'Вернуться'
+  homePageTitle: data.homePageTitle || t('error.back')
 })
 
 const handleError = () => clearError({ redirect: errorData.value.clearErrorHref })

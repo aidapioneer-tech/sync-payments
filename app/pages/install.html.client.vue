@@ -10,8 +10,10 @@ definePageMeta({
   layout: 'index-page'
 })
 
+const { t } = useI18n()
+
 useHead({
-  title: 'page.install.seo.title'
+  title: t('install.seoTitle')
 })
 
 /**
@@ -42,11 +44,11 @@ const config = useRuntimeConfig().public
 // region Steps ////
 const steps = ref<Record<string, IStep>>({
   init: {
-    caption: 'page.install.step.init.caption',
+    caption: 'install.step.init',
     action: makeInit
   },
   placement: {
-    caption: 'page.install.step.placement.caption',
+    caption: 'install.step.placement',
     action: async () => {
       await $b24.callBatch([
         {
@@ -76,7 +78,7 @@ const steps = ref<Record<string, IStep>>({
     }
   },
   finish: {
-    caption: 'page.install.step.finish.caption',
+    caption: 'install.step.finish',
     action: makeFinish
   }
 })
@@ -106,6 +108,11 @@ const stepsData = computed(() => {
     }
   })
 })
+
+const currentStepCaption = computed(() => {
+  const caption = steps.value[stepCode.value]?.caption
+  return caption ? t(caption) : '...'
+})
 // endregion ////
 
 // region Lifecycle Hooks ////
@@ -113,7 +120,7 @@ onMounted(async () => {
   $logger.info('Hi from install page')
 
   try {
-    await $b24.parent.setTitle('page.install.seo.title')
+    await $b24.parent.setTitle(t('install.seoTitle'))
 
     for (const [key, step] of Object.entries(steps.value)) {
       stepCode.value = key
@@ -148,9 +155,9 @@ onMounted(async () => {
       class="w-1/2 sm:w-1/3"
     />
     <div class="mt-6 flex flex-col items-center justify-center gap-2">
-      <ProseH1 class="text-nowrap mb-0"> Установка </ProseH1>
+      <ProseH1 class="text-nowrap mb-0"> {{ $t('install.heading') }} </ProseH1>
       <ProseP small accent="less">
-        {{ steps[stepCode]?.caption || '...' }}
+        {{ currentStepCaption }}
       </ProseP>
     </div>
 

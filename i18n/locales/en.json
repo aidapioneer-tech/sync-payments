@@ -1,0 +1,45 @@
+{
+  "app": {
+    "title": "Payment distribution"
+  },
+  "index": {
+    "ready": "Ready. Open the “Payments” smart process."
+  },
+  "install": {
+    "seoTitle": "Installing the app",
+    "heading": "Installation",
+    "step": {
+      "init": "Initializing…",
+      "placement": "Registering the card tab…",
+      "finish": "Done!"
+    }
+  },
+  "error": {
+    "title": "Error",
+    "retry": "Retry",
+    "back": "Go back"
+  },
+  "handler": {
+    "pageTitle": "Distributing money across deals",
+    "dealsList": "Deals list",
+    "paid": "Paid",
+    "select": "Select",
+    "currencyMismatch": "Currencies differ",
+    "currencyMismatchSoftInfo": "If really needed, the incoming money can be converted to another currency via a workflow",
+    "currencyMismatchHardInfo": "Cannot distribute to a different currency",
+    "total": "Total:",
+    "remaining": "Left to distribute:",
+    "youWantDistribute": "You want to distribute:",
+    "distribute": "Distribute",
+    "overLimit": "You are trying to distribute more than required",
+    "errors": {
+      "saveFirst": "Save the payment first. After that you can work with it here",
+      "rejected": "The payment was rejected.",
+      "closed": "The payment is successfully closed",
+      "fillMyCompany": "Please fill in the [Your company details] field.",
+      "fillClient": "Please specify who paid in the [Client] field.",
+      "generic": "Problems with distributing the money",
+      "dealNotFound": "Could not find a related deal for the payment"
+    }
+  }
+}

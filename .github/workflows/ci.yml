@@ -54,6 +54,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Locales parity
+        run: pnpm check:locales
+
   test:
     name: Tests
     runs-on: ubuntu-latest

@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     '@bitrix24/b24jssdk-nuxt',
     '@nuxt/eslint',
     '@pinia/nuxt',
-    '@nuxt/test-utils/module'
+    '@nuxt/test-utils/module',
+    '@nuxtjs/i18n'
   ],
   ssr: false,
   devtools: { enabled: false },
@@ -22,6 +23,17 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
+  // Встроенное в карточку B24 приложение — без префиксов локали в URL.
+  // RU — основной язык; EN держим для паритета. Файлы: i18n/locales/*.json
+  i18n: {
+    strategy: 'no_prefix',
+    defaultLocale: 'ru',
+    locales: [
+      { code: 'ru', language: 'ru-RU', name: 'Русский', file: 'ru.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' }
+    ],
+    detectBrowserLanguage: false
+  },
   /**
    * @see https://nuxt.com/docs/guide/going-further/runtime-config#example
    */

@@ -3,8 +3,6 @@
 # Прогоняет детерминированную установку, линт, тайпчек и production-сборку.
 # Падает на первой же ошибке. Зеркало — verify.sh (linux/macOS).
 #
-# Проверка паритета ключей локалей будет добавлена сюда на шаге i18n.
-#
 $ErrorActionPreference = 'Stop'
 Set-Location -Path $PSScriptRoot
 
@@ -17,12 +15,13 @@ function Invoke-Step($Title, $Cmd) {
     }
 }
 
-Invoke-Step '[1/6] pnpm install --frozen-lockfile' 'pnpm install --frozen-lockfile'
-Invoke-Step '[2/6] format:check (prettier)'         'pnpm format:check'
-Invoke-Step '[3/6] lint (eslint)'                   'pnpm lint'
-Invoke-Step '[4/6] typecheck (nuxt typecheck)'      'pnpm typecheck'
-Invoke-Step '[5/6] test (vitest)'                   'pnpm test'
-Invoke-Step '[6/6] build (nuxt generate)'           'pnpm generate'
+Invoke-Step '[1/7] pnpm install --frozen-lockfile' 'pnpm install --frozen-lockfile'
+Invoke-Step '[2/7] format:check (prettier)'         'pnpm format:check'
+Invoke-Step '[3/7] lint (eslint)'                   'pnpm lint'
+Invoke-Step '[4/7] typecheck (nuxt typecheck)'      'pnpm typecheck'
+Invoke-Step '[5/7] locales (паритет ключей i18n)'   'pnpm check:locales'
+Invoke-Step '[6/7] test (vitest)'                   'pnpm test'
+Invoke-Step '[7/7] build (nuxt generate)'           'pnpm generate'
 
 Write-Host ''
-Write-Host 'OK verify: format + lint + typecheck + test + build — всё зелёное' -ForegroundColor Green
+Write-Host 'OK verify: format + lint + typecheck + locales + test + build — всё зелёное' -ForegroundColor Green
