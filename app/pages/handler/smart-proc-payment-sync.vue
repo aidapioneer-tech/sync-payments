@@ -286,7 +286,10 @@ const loadClientPayments = async (): Promise<void> => {
       {
         entityTypeId: EnumCrmEntityTypeId.deal,
         filter: {
-          '=categoryId': config.dealForWorkCategoryId,
+          '@categoryId': [
+            Text.toInteger(config.dealForWorkCategoryId),
+            Text.toInteger(config.dealForContractorCategoryId)
+          ],
           '=companyId': entity.value.companyId,
           '=closed': 'N'
         }

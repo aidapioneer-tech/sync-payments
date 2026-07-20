@@ -41,6 +41,8 @@ export default defineNuxtConfig({
     public: {
       smartProcessIdPayment: 1036,
       dealForWorkCategoryId: 2,
+      // Категория «Подрядчики» — расходные распределения (issue aida#121)
+      dealForContractorCategoryId: 3,
       smartProcessIdDistributions: 1044,
       smartProcessStatusPaymentSuccess: 'DT1036_14:SUCCESS', // smartProcessIdPayment
       smartProcessStatusPaymentFail: 'DT1036_14:FAIL', // smartProcessStatusPayment
