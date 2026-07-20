@@ -286,7 +286,13 @@ const loadClientPayments = async (): Promise<void> => {
       {
         entityTypeId: EnumCrmEntityTypeId.deal,
         filter: {
-          '=categoryId': config.dealForWorkCategoryId,
+          // Работа с проектом + Подрядчики (issue aida#121): ищем сделки в обеих
+          // категориях. .filter отбрасывает пустой/некорректный конфиг (id <= 0) —
+          // иначе Text.toInteger('') === 0 подтянул бы сделки категории 0.
+          '@categoryId': [
+            Text.toInteger(config.dealForWorkCategoryId),
+            Text.toInteger(config.dealForContractorCategoryId)
+          ].filter((id) => id > 0),
           '=companyId': entity.value.companyId,
           '=closed': 'N'
         }
